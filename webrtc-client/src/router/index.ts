@@ -22,9 +22,9 @@ const router = createRouter({
 			component: import('../pages/Demo/index.vue'),
 		},
 		{
-			path: '/local1',
-			name: 'local1',
-			component: import('../pages/Demo/index.vue'),
+			path: '/local',
+			name: 'local',
+			component: import('../pages/local/index.vue'),
 		},
 		{
 			path: '/speech',

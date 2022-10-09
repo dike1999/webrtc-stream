@@ -4,25 +4,68 @@
 		<div class="videos">
 			<div class="video">
 				<h3 class="title">Local</h3>
-				<video autoplay height="300" width="300" id="localVideo" ref="localVideo" />
+				<video
+					autoplay
+					height="300"
+					width="300"
+					id="localVideo"
+					ref="localVideo"
+				/>
 				<h3 class="title">OfferSDP</h3>
-				<el-input v-model="offerSDP" :autosize="{ minRows: 2, maxRows: 8 }" type="textarea" placeholder="OfferSDP" />
+				<el-input
+					v-model="offerSDP"
+					:autosize="{ minRows: 2, maxRows: 8 }"
+					type="textarea"
+					placeholder="OfferSDP"
+				/>
 			</div>
 			<div class="video">
 				<h3 class="title">Remote</h3>
-				<video autoplay height="300" width="300" id="remoteVideo" ref="remoteVideo" />
+				<video
+					autoplay
+					height="300"
+					width="300"
+					id="remoteVideo"
+					ref="remoteVideo"
+				/>
 				<h3 class="title">AnswerSDP</h3>
-				<el-input v-model="answerSDP" :autosize="{ minRows: 2, maxRows: 8 }" type="textarea" placeholder="AnswerSDP" />
+				<el-input
+					v-model="answerSDP"
+					:autosize="{ minRows: 2, maxRows: 8 }"
+					type="textarea"
+					placeholder="AnswerSDP"
+				/>
 			</div>
 		</div>
 		<div class="buttons">
-			<el-button :disabled="isDisable.start" type="primary" @click="handleStart" class="btn" round size="large">
+			<el-button
+				:disabled="isDisable.start"
+				type="primary"
+				@click="handleStart"
+				class="btn"
+				round
+				size="large"
+			>
 				Start
 			</el-button>
-			<el-button :disabled="isDisable.call" type="primary" @click="handleCall" class="btn" round size="large">
+			<el-button
+				:disabled="isDisable.call"
+				type="primary"
+				@click="handleCall"
+				class="btn"
+				round
+				size="large"
+			>
 				Call
 			</el-button>
-			<el-button :disabled="isDisable.hangup" type="primary" @click="handleHangUp" class="btn" round size="large">
+			<el-button
+				:disabled="isDisable.hangup"
+				type="primary"
+				@click="handleHangUp"
+				class="btn"
+				round
+				size="large"
+			>
 				HangUp
 			</el-button>
 		</div>
