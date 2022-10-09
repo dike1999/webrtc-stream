@@ -1,11 +1,5 @@
 <template>
   <div class="home">
-    <a
-      href="https://github.com/wuyawei"
-      target="_blank"
-      class="github-logo"
-    ></a>
-    <div class="fork-me-on-github"></div>
     <div class="center">
       <div><router-link :to="{ name: 'Speech' }">H5 语音识别</router-link></div>
       <div>
@@ -57,19 +51,6 @@ export default {
 <style lang="scss" scoped>
 .home {
   text-align: center;
-  .github-logo {
-    position: absolute;
-    right: 0;
-    top: 0;
-    width: 120px;
-    height: 120px;
-    z-index: 1;
-    background-image: url("../assets/github.png");
-    background-size: contain;
-    background-position: 10px -8px;
-    background-repeat: no-repeat;
-    display: block;
-  }
 }
 .center {
   margin: auto;
@@ -97,17 +78,6 @@ export default {
   }
 }
 
-.fork-me-on-github {
-  width: 0;
-  height: 0;
-  position: absolute;
-  right: 0;
-  top: 0;
-  border-right: 60px solid rgba(37, 178, 94, 0.8);
-  border-top: 60px solid rgba(37, 178, 94, 0.8);
-  border-bottom: 60px solid #fff;
-  border-left: 60px solid #fff;
-}
 .edit-div {
   width: 200px;
   height: 200px;

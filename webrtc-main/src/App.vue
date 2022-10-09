@@ -12,6 +12,7 @@ export default {
     };
   },
   mounted() {
+    // eslint-disable-next-line no-unused-vars
     this.$bus.$on("busClick", (_) => {
       console.log("app", this);
     });

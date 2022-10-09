@@ -299,6 +299,7 @@ export default {
         // 接收到 offer
         this.onOffer(data);
       });
+      // eslint-disable-next-line no-unused-vars
       socket.on("1v1hangup", (_) => {
         // 通话挂断
         this.clearState();

@@ -135,7 +135,9 @@ export default {
     //                console.log(this.list);
     //            },2000)
     this.proxyReactive();
+    // eslint-disable-next-line no-unused-vars
     let obj = {};
+    // eslint-disable-next-line no-unused-vars
     let handler = {
       get: function (target, key, receiver) {
         console.log("get", key);
