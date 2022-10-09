@@ -34,7 +34,7 @@ const router = createRouter({
 		{
 			path: '/transfer',
 			name: 'transfer',
-			component: import('../pages/Demo/index.vue'),
+			component: import('../pages/transfer/index.vue'),
 		},
 		{
 			path: '/remote1',
@@ -49,16 +49,6 @@ const router = createRouter({
 		{
 			path: '/whiteboard',
 			name: 'whiteboard',
-			component: import('../pages/Demo/index.vue'),
-		},
-		{
-			path: '/communication',
-			name: 'communication',
-			component: import('../pages/Demo/index.vue'),
-		},
-		{
-			path: '/responsive',
-			name: 'responsive',
 			component: import('../pages/Demo/index.vue'),
 		},
 	],

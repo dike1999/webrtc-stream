@@ -2,12 +2,6 @@
 	<div class="home">
 		<div><router-link :to="{ name: 'speech' }">H5 语音识别</router-link></div>
 		<div>
-			<router-link :to="{ name: 'communication' }">Vue 组件间通信</router-link>
-		</div>
-		<div>
-			<router-link :to="{ name: 'responsive' }">Vue 响应式原理</router-link>
-		</div>
-		<div>
 			<router-link :to="{ name: 'transfer' }"
 				>video 标签之间的流传输</router-link
 			>
