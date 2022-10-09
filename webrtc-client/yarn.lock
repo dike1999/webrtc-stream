@@ -129,6 +129,11 @@
   resolved "https://mirrors.cloud.tencent.com/npm/@types%2flodash/-/lodash-4.14.186.tgz#862e5514dd7bd66ada6c70ee5fce844b06c8ee97"
   integrity sha512-eHcVlLXP0c2FlMPm56ITode2AgLMSa6aJ05JTTbYbI+7EMkCEE5qk2E41d5g2lCVTqRe0GnnRFurmlCsDODrPw==
 
+"@types/socket.io-client@1.4.36":
+  version "1.4.36"
+  resolved "https://mirrors.cloud.tencent.com/npm/@types%2fsocket.io-client/-/socket.io-client-1.4.36.tgz#e4f1ca065f84c20939e9850e70222202bd76ff3f"
+  integrity sha512-ZJWjtFBeBy1kRSYpVbeGYTElf6BqPQUkXDlHHD4k/42byCN5Rh027f4yARHCink9sKAkbtGZXEAmR0ZCnc2/Ag==
+
 "@types/web-bluetooth@^0.0.15":
   version "0.0.15"
   resolved "https://mirrors.cloud.tencent.com/npm/@types%2fweb-bluetooth/-/web-bluetooth-0.0.15.tgz#d60330046a6ed8a13b4a53df3813c44942ebdf72"

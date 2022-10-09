@@ -39,7 +39,7 @@ const router = createRouter({
 		{
 			path: '/remote',
 			name: 'remote',
-			component: import('../pages/remote/index.vue'),
+			component: import('../pages/remote/remote.vue'),
 		},
 		{
 			path: '/palette',
