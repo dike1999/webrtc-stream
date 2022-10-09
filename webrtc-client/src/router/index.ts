@@ -37,9 +37,9 @@ const router = createRouter({
 			component: import('../pages/transfer/index.vue'),
 		},
 		{
-			path: '/remote1',
-			name: 'remote1',
-			component: import('../pages/Demo/index.vue'),
+			path: '/remote',
+			name: 'remote',
+			component: import('../pages/remote/index.vue'),
 		},
 		{
 			path: '/palette',

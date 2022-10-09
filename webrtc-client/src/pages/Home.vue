@@ -14,7 +14,7 @@
 			>
 		</div>
 		<div>
-			<router-link :to="{ name: 'remote1' }"
+			<router-link :to="{ name: 'remote' }"
 				>WebRTC 1 v 1 网络对等连接</router-link
 			>
 		</div>

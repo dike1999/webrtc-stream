@@ -15,13 +15,13 @@ module.exports = {
 	indexPath: '../index.html', // index.html 输出路径 默认 index.html
 	devServer: {
 		publicPath: baseUrl, // 和 baseUrl 保持一致
-		proxy: {
-			'/': {
-				ws: false, // websocket 不需要代理
-				target: 'http://localhost:3001',
-				changeOrigin: true,
-			},
-		},
+		// proxy: {
+		// 	'/': {
+		// 		ws: false, // websocket 不需要代理
+		// 		target: 'http://localhost:3001',
+		// 		changeOrigin: true,
+		// 	},
+		// },
 		port: '3221',
 	},
 	productionSourceMap: false,

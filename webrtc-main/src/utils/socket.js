@@ -1,4 +1,3 @@
 import io from 'socket.io-client';
-let host = location.origin;
-const socket = io.connect(host);
+const socket = io.connect('http://localhost:3001');
 export default socket;
