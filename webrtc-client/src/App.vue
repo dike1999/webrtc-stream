@@ -1,7 +1,9 @@
-<script setup lang="ts"></script>
+<script setup lang="ts">
+import { RouterView } from 'vue-router';
+</script>
 
 <template>
-	<div>Hello</div>
+	<RouterView></RouterView>
 </template>
 
 <style scoped></style>
