@@ -1,50 +1,185 @@
 <template>
-	<div class="transfer-box">
-		<div class="transfer">
-			<video src="" ref="v1" controls autoplay></video>
-			<video src="" ref="v2" controls autoplay></video>
+	<div class="WebRTC">
+		<h1>This is an WebRTC page</h1>
+		<div class="videos">
+			<div class="video">
+				<h3 class="title">Local</h3>
+				<video autoplay height="300" width="300" id="localVideo" ref="localVideo" />
+				<h3 class="title">OfferSDP</h3>
+				<el-input v-model="offerSDP" :autosize="{ minRows: 2, maxRows: 8 }" type="textarea" placeholder="OfferSDP" />
+			</div>
+			<div class="video">
+				<h3 class="title">Remote</h3>
+				<video autoplay height="300" width="300" id="remoteVideo" ref="remoteVideo" />
+				<h3 class="title">AnswerSDP</h3>
+				<el-input v-model="answerSDP" :autosize="{ minRows: 2, maxRows: 8 }" type="textarea" placeholder="AnswerSDP" />
+			</div>
 		</div>
-		<button @click="start">开始</button>
-		<button @click="transfer">传输</button>
+		<div class="buttons">
+			<el-button :disabled="isDisable.start" type="primary" @click="handleStart" class="btn" round size="large">
+				Start
+			</el-button>
+			<el-button :disabled="isDisable.call" type="primary" @click="handleCall" class="btn" round size="large">
+				Call
+			</el-button>
+			<el-button :disabled="isDisable.hangup" type="primary" @click="handleHangUp" class="btn" round size="large">
+				HangUp
+			</el-button>
+		</div>
 	</div>
+	<div class="errMsg">{{ errMsg }}</div>
 </template>
 
-<script lang="ts" setup>
-import { ref } from 'vue';
+<script setup lang="ts">
+import { onUnmounted, ref, reactive } from 'vue';
 
-const v1 = ref<HTMLVideoElement | null>(null);
-const v2 = ref<HTMLVideoElement | null>(null);
+const localVideo = ref<HTMLMediaElement | null>(null);
+const remoteVideo = ref<HTMLMediaElement | null>(null);
+const loaclMediaStream = ref<MediaStream>({} as MediaStream);
+const connection1 = ref<RTCPeerConnection | null>();
+const connection2 = ref<RTCPeerConnection | null>();
 
-const start = () => {
+const offerSDP = ref('');
+const answerSDP = ref('');
+const errMsg = ref('');
+
+// 页面交互相关
+const isDisable = reactive({
+	start: false,
+	call: true,
+	hangup: true,
+});
+
+const handleStart = () => {
+	if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+		errMsg.value = 'The getUserMedia is not supported!';
+		return;
+	}
 	navigator.mediaDevices
 		.getUserMedia({
-			audio: true,
-			video: true,
+			video: {
+				width: 200,
+				height: 200,
+				frameRate: 60,
+				facingMode: 'enviroment',
+			},
+			audio: false,
 		})
-		.then((stream) => {
-			if (v1.value) v1.value.srcObject = stream;
+		.then((stream: MediaStream) => {
+			loaclMediaStream.value = stream;
+			if (localVideo.value) localVideo.value.srcObject = stream;
+			isDisable.start = true;
+			isDisable.call = false;
+			isDisable.hangup = false;
+		})
+		.catch((err) => {
+			errMsg.value = err;
 		});
 };
-const transfer = () => {
-	if (v2.value && v1.value) {
-		v2.value.srcObject = v1.value.captureStream();
-	}
-};
-</script>
 
-<style lang="less">
-.transfer {
-	display: flex;
-	justify-content: center;
-	video {
-		width: 480px;
-		height: 320px;
-		margin-left: 20px;
+const getAnswer = (desc: any) => {
+	connection2.value?.setLocalDescription(desc);
+	answerSDP.value = desc.sdp;
+	// send desc to signal
+	// receive desc from signal
+	connection1.value?.setRemoteDescription(desc);
+};
+
+const getLocalDescription = (desc: any) => {
+	connection1.value?.setLocalDescription(desc);
+	offerSDP.value = desc.sdp;
+	// send desc to signal
+	// receive desc from signal
+	connection2.value?.setRemoteDescription(desc);
+	connection2.value
+		?.createAnswer()
+		.then(getAnswer)
+		.catch((err) => {
+			errMsg.value = err;
+		});
+};
+
+const handleCall = () => {
+	connection1.value = new RTCPeerConnection();
+	connection1.value.onicecandidate = (e: any) => {
+		if (connection2.value) connection2.value.addIceCandidate(e.candidate);
+	};
+
+	connection2.value = new RTCPeerConnection();
+	connection2.value.onicecandidate = (e: any) => {
+		if (connection1.value) connection1.value.addIceCandidate(e.candidate);
+	};
+	connection2.value.ontrack = (e) => {
+		if (remoteVideo.value) remoteVideo.value.srcObject = e.streams[0];
+	};
+	loaclMediaStream.value.getTracks().forEach((track) => {
+		connection1.value?.addTrack(track, loaclMediaStream.value);
+	});
+
+	connection1.value
+		.createOffer({
+			offerToReceiveAudio: false,
+			offerToReceiveVideo: true,
+		})
+		.then(getLocalDescription)
+		.catch((err) => {
+			errMsg.value = err;
+		});
+	isDisable.call = true;
+};
+
+const handleHangUp = () => {
+	if (loaclMediaStream.value && loaclMediaStream.value.getTracks) {
+		loaclMediaStream.value.getTracks().forEach((track) => {
+			track.stop();
+		});
 	}
-}
-.transfer-box {
-	button {
-		margin: 10px;
+
+	connection1.value?.close();
+	connection2.value?.close();
+	connection1.value = null;
+	connection2.value = null;
+	if (localVideo.value) localVideo.value.srcObject = null;
+	if (remoteVideo.value) remoteVideo.value.srcObject = null;
+	isDisable.start = false;
+	isDisable.call = true;
+	isDisable.hangup = true;
+	offerSDP.value = '';
+	answerSDP.value = '';
+};
+
+onUnmounted(() => {
+	if (loaclMediaStream.value && loaclMediaStream.value.getTracks) {
+		loaclMediaStream.value.getTracks().forEach((track) => {
+			track.stop();
+		});
+	}
+});
+</script>
+<style scoped lang="less">
+.WebRTC {
+	.videos {
+		display: flex;
+		justify-content: center;
+		flex-wrap: wrap;
+
+		.video {
+			flex: auto;
+
+			.title {
+				text-align: center;
+			}
+		}
+	}
+
+	.buttons {
+		display: flex;
+		justify-content: space-around;
+
+		.btn {
+			margin: 0 25px;
+			width: 100%;
+		}
 	}
 }
 </style>
