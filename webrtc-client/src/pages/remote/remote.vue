@@ -18,12 +18,42 @@
 </template>
 
 <script lang="ts" setup>
+import { ElMessage, ElMessageBox } from 'element-plus';
 import { ref, onMounted } from 'vue';
 import socket from '../../utils/socket';
 
 const account = ref(window.sessionStorage.getItem('account') || '');
 const isJoin = ref(false);
-const roomid = ref('webrtc_1v1');
+const userList = ref<any[]>([]);
+const roomid = ref('webrtc_1v1'); // 指定房间ID
+const isCall = ref(false); // 正在通话的对象
+const loading = ref(false);
+const loadingText = ref('呼叫中');
+const isToPeer = ref(false); // 是否建立了 P2P 连接
+const peer = ref(null);
+const offerOption = ref({
+	offerToReceiveAudio: 1,
+	offerToReceiveVideo: 1,
+});
+
+const createOffer = async (data: any) => {
+	console.log(data);
+};
+const createP2P = async (data: any) => {
+	console.log(data);
+};
+const reply = (account: any, type: any) => {
+	console.log(account, type);
+};
+const onAnswer = (data: any) => {
+	console.log(data);
+};
+const onIce = async (data: any) => {
+	console.log(data);
+};
+const onOffer = (data: any) => {
+	console.log(data);
+};
 
 const join = () => {
 	if (!account.value) return;
@@ -33,7 +63,82 @@ const join = () => {
 };
 
 const initSocket = () => {
-	console.log('init');
+	socket.on('joined', (data: any[]) => {
+		userList.value = data;
+	});
+	// 收到回复
+	socket.on('reply', async (data: any) => {
+		loading.value = false;
+		switch (data.type) {
+		case '1': // 同意
+			isCall.value = data.self;
+			// 对方同意之后创建自己的 peer
+			await createP2P(data);
+			// 并给对方发送 offer
+			createOffer(data);
+			break;
+		case '2': //拒绝
+			ElMessage({
+				message: '对方拒绝了你的请求！',
+				type: 'warning',
+			});
+			break;
+		case '3': // 正在通话中
+			ElMessage({
+				message: '对方正在通话中！',
+				type: 'warning',
+			});
+			break;
+		default:
+			break;
+		}
+	});
+	// 收到请求
+	socket.on('apply', (data: any) => {
+		if (isCall.value) {
+			reply(data.self, '3');
+			return;
+		}
+		console.log('object');
+		ElMessageBox.confirm(data.self + ' 向你请求视频通话, 是否同意?', '提示', {
+			confirmButtonText: '同意',
+			cancelButtonText: '拒绝',
+			type: 'warning',
+		})
+			.then(async () => {
+				await createP2P(data); // 同意之后创建自己的 peer 等待对方的 offer
+				isCall.value = data.self;
+				reply(data.self, '1');
+			})
+			.catch(() => {
+				reply(data.self, '2');
+			});
+	});
+	// 接收到 answer
+	socket.on('1v1answer', (data: any) => {
+		onAnswer(data);
+	});
+	socket.on('1v1ICE', (data: any) => {
+		// 接收到 ICE
+		onIce(data);
+	});
+	socket.on('1v1offer', (data: any) => {
+		// 接收到 offer
+		onOffer(data);
+	});
+	// eslint-disable-next-line no-unused-vars
+	socket.on('1v1hangup', (_: any) => {
+		console.log(_);
+		// 通话挂断
+		ElMessage({
+			message: '对方已断开连接！',
+			type: 'warning',
+		});
+		if (peer.value) peer.value?.close();
+		peer.value = null;
+		isToPeer.value = false;
+		isCall.value = false;
+	});
 };
 
 onMounted(() => {
