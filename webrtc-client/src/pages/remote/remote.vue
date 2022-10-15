@@ -18,7 +18,6 @@
 </template>
 
 <script lang="ts" setup>
-import { ElMessage, ElMessageBox } from 'element-plus';
 import { ref, onMounted } from 'vue';
 import socket from '../../utils/socket';
 
@@ -70,27 +69,27 @@ const initSocket = () => {
 	socket.on('reply', async (data: any) => {
 		loading.value = false;
 		switch (data.type) {
-		case '1': // 同意
-			isCall.value = data.self;
-			// 对方同意之后创建自己的 peer
-			await createP2P(data);
-			// 并给对方发送 offer
-			createOffer(data);
-			break;
-		case '2': //拒绝
-			ElMessage({
-				message: '对方拒绝了你的请求！',
-				type: 'warning',
-			});
-			break;
-		case '3': // 正在通话中
-			ElMessage({
-				message: '对方正在通话中！',
-				type: 'warning',
-			});
-			break;
-		default:
-			break;
+			case '1': // 同意
+				isCall.value = data.self;
+				// 对方同意之后创建自己的 peer
+				await createP2P(data);
+				// 并给对方发送 offer
+				createOffer(data);
+				break;
+			case '2': //拒绝
+				ElMessage({
+					message: '对方拒绝了你的请求！',
+					type: 'warning',
+				});
+				break;
+			case '3': // 正在通话中
+				ElMessage({
+					message: '对方正在通话中！',
+					type: 'warning',
+				});
+				break;
+			default:
+				break;
 		}
 	});
 	// 收到请求
