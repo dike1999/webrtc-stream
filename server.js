@@ -106,9 +106,18 @@ app._io.on('disconnect', (sock) => {
 	console.log(`disconnect id => ${users}`);
 });
 
-// 在端口3001监听:
-let port = 3001;
-app.listen(port, (_) => {
+// 在端口9876监听:
+let port = 9876;
+
+var { createServer } = require('https');
+var { readFileSync } = require('fs');
+var { resolve } = require('path');
+createServer(
+	{
+		key: readFileSync(resolve(__dirname, './ssl/im.coderdi.top.key')),
+		cert: readFileSync(resolve(__dirname, './ssl/im.coderdi.top.pem')),
+	},
+	app.callback()
+).listen(port, () => {
 	console.log('app started at port ...' + port);
 });
-// https.createServer(app.callback()).listen(3001);
